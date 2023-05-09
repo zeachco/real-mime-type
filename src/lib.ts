@@ -5,37 +5,37 @@ if (typeof global !== "undefined") {
   (global as any).fromFiles = fromFiles;
 }
 
-if (module) {
-  module.exports = fromFiles;
-}
+try {
+  if (module) {
+    module.exports = fromFiles;
+  }
+} catch (error) {}
 
 function fromFiles(files: File[]) {
-  return new Promise((resolve) => {
-    return Array.from(files).map((file) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const arrayBuffer = e.target?.result;
-        if (!arrayBuffer || typeof arrayBuffer === "string") {
-          throw new Error("Could not read file");
-        }
-        const mimeType = getMimeTypes(arrayBuffer, file.type);
-        resolve(mimeType);
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  });
+  return Promise.all(
+    Array.from(files).map((file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const arrayBuffer = e.target?.result;
+          if (!arrayBuffer || typeof arrayBuffer === "string") {
+            throw new Error("Could not read file");
+          }
+          const mimeType = getMimeTypes(arrayBuffer, file.type);
+          resolve(mimeType);
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    })
+  );
 }
 
 function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
-  for (const type in db) {
-    const { hexCodes, offset, mimeTypes } = db[type] as DBItem;
-    for (const hexCode of hexCodes) {
-      const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
-      const regex = new RegExp(hexCode, "i");
-      if (regex.test(sequence)) {
-        return mimeTypes[0] || fallback;
-      }
-    }
+  for (const k in db) {
+    const { hexCode, offset, mimeType } = db[k] as DBItem;
+    const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
+    const regex = new RegExp(hexCode, "i");
+    if (regex.test(sequence)) return mimeType;
   }
 
   console.warn(`could not match magic number, using fallback ${fallback}`);
@@ -45,7 +45,7 @@ function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
 function getHexFromRange(
   arrayBuffer: ArrayBuffer,
   start: number,
-  length: number,
+  length: number
 ) {
   const uint8Array = new Uint8Array(arrayBuffer);
   const hexValues = [] as string[];
@@ -55,5 +55,5 @@ function getHexFromRange(
     hexValues.push(hexValue);
   }
 
-  return hexValues.join("");
+  return hexValues.filter(Boolean).join("");
 }
