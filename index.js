@@ -24,7 +24,7 @@ function fromFiles(files) {
 function getMimeTypes(arrayBuffer, fallback = "unknown") {
     for(const type in __default){
         const { hexCodes , offset , mimeTypes  } = __default[type];
-        for(const hexCode in hexCodes){
+        for (const hexCode of hexCodes){
             const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
             const regex = new RegExp(hexCode, "i");
             if (regex.test(sequence)) {

@@ -29,7 +29,7 @@ function fromFiles(files: File[]) {
 function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
   for (const type in db) {
     const { hexCodes, offset, mimeTypes } = db[type] as DBItem;
-    for (const hexCode in hexCodes) {
+    for (const hexCode of hexCodes) {
       const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
       const regex = new RegExp(hexCode, "i");
       if (regex.test(sequence)) {
