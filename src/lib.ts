@@ -1,7 +1,13 @@
 import type { DBItem } from "./types.ts";
 import db from "./db.json" assert { type: "json" };
 
-(window as any).fromFiles = fromFiles;
+if (typeof global !== "undefined") {
+  (global as any).fromFiles = fromFiles;
+}
+
+if (module) {
+  module.exports = fromFiles;
+}
 
 function fromFiles(files: File[]) {
   return new Promise((resolve) => {
@@ -39,7 +45,7 @@ function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
 function getHexFromRange(
   arrayBuffer: ArrayBuffer,
   start: number,
-  length: number
+  length: number,
 ) {
   const uint8Array = new Uint8Array(arrayBuffer);
   const hexValues = [] as string[];

@@ -1,8 +1,6 @@
 import {
   DOMParser,
   HTMLDocument,
-  HTMLTemplateElement,
-  Node,
 } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { mime } from "https://raw.githubusercontent.com/Tyrenn/mimetypes/main/mod.ts";
 import { transpile } from "https://deno.land/x/emit/mod.ts";

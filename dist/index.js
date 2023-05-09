@@ -1,7 +1,12 @@
 import db from "./db.json" assert {
     type: "json"
 };
-window.fromFiles = fromFiles;
+if (typeof global !== "undefined") {
+    global.fromFiles = fromFiles;
+}
+if (module) {
+    module.exports = fromFiles;
+}
 function fromFiles(files) {
     return new Promise((resolve)=>{
         return Array.from(files).map((file)=>{
