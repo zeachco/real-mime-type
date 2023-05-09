@@ -63,7 +63,8 @@ function getDB(document: HTMLDocument) {
           );
 
         // get offset to start reading the binary file
-        const offset = +offsetCol?.innerText?.trim();
+        const offsetText = offsetCol?.innerText?.trim();
+        const offset = isNaN(offsetText) ? 0 : +offsetText;
 
         // get all extensions (will be used to get mime types)
         const exts = Array.from(extensionCol?.childNodes || [])
