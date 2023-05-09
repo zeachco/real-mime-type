@@ -9,3 +9,10 @@ MIME types (IANA media types) can be wrong when the user changes the file extens
 or
 
 `deno task build` for ci
+
+
+## Demo
+
+https://stackblitz.com/edit/react-ts-eqqh3x?file=App.tsx,UploadValidator.tsx
+
+## Contributions to package it properly are welcome
