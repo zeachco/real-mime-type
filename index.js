@@ -26,9 +26,13 @@ function fromFiles(files) {
 function getMimeTypes(arrayBuffer, fallback = "unknown") {
     for(const k in __default){
         const { hexCode , offset , mimeType  } = __default[k];
-        const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
-        const regex = new RegExp(hexCode, "i");
-        if (regex.test(sequence)) return mimeType;
+        try {
+            const sequence = getHexFromRange(arrayBuffer, offset, hexCode.length);
+            const regex = new RegExp(hexCode, "i");
+            if (regex.test(sequence)) return mimeType;
+        } catch (err) {
+            console.warn(`could not match magic number for ${mimeType}`, err);
+        }
     }
     console.warn(`could not match magic number, using fallback ${fallback}`);
     return fallback;
@@ -36,7 +40,8 @@ function getMimeTypes(arrayBuffer, fallback = "unknown") {
 function getHexFromRange(arrayBuffer, start, length) {
     const uint8Array = new Uint8Array(arrayBuffer);
     const hexValues = [];
-    for(let i = start; i <= start + length; i++){
+    const from = Math.min(start, uint8Array.length - length);
+    for(let i = from; i <= from + length; i++){
         const hexValue = uint8Array[i].toString(16).padStart(2, "0");
         hexValues.push(hexValue);
     }
