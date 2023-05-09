@@ -63,8 +63,7 @@ function getDB(document: HTMLDocument) {
           );
 
         // get offset to start reading the binary file
-        const offsetText = offsetCol?.innerText?.trim();
-        const offset = isNaN(offsetText) ? 0 : +offsetText;
+        const offset = +offsetCol?.innerText?.trim();
 
         // get all extensions (will be used to get mime types)
         const exts = Array.from(extensionCol?.childNodes || [])
@@ -77,14 +76,14 @@ function getDB(document: HTMLDocument) {
           .map((hexCode) => mime.getType(hexCode)!)
           .filter(Boolean);
 
-        if (hexCodes.length) {
+        if (hexCodes.length && isFinite(offset)) {
           data.push({
             hexCodes,
             offset,
             mimeTypes,
           } as DBItem);
         } else {
-          console.warn(`Dropping line ${index} because it has no hex codes`);
+          console.warn(`Dropping line ${index} because it could not be parsed ${hexCodes} ${mimeTypes}`);
         }
       } catch (error) {
         console.log(`line ${index} failed:`, error);
