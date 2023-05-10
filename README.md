@@ -4,6 +4,10 @@ MIME types (IANA media types) can be wrong when the user changes the file
 extension, this package reads the first bytes of the file to ensure they fit the
 expectations and reverts to default browser mime types when unsupported
 
+## targets
+
+This package is built using Deno but targets Deno, NPM and ESM
+
 ## Generate lib
 
 `deno task dev` for watch mode
