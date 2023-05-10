@@ -10,11 +10,15 @@ This package is built using Deno but targets Deno, NPM and ESM
 
 ## Generate lib
 
-`deno task dev` for watch mode
+```bash
+deno task dev` for watch mode
+```
 
 or
 
-`deno task build` for ci
+```bash
+deno task build` for ci
+```
 
 ## Demo
 
