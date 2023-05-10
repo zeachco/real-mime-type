@@ -1,6 +1,14 @@
 {
   "tasks": {
-    "dev": "deno run --watch='./src/*.ts' -A ./src/build.ts",
-    "build": "deno run -A ./src/build.ts"
+    "dev": "deno run --watch -A ./_build.ts",
+    "build": "deno run -A ./_build.ts"
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable"
+    ]
   }
 }

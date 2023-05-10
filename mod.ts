@@ -1,33 +1,26 @@
 import type { DBItem } from "./types.ts";
 import db from "./db.json" assert { type: "json" };
 
-if (typeof global !== "undefined") {
-  (global as any).fromFiles = fromFiles;
+type File = any;
+type FileList = File[];
+
+export function fromFiles(files: FileList) {
+  return Promise.all(Array.from(files).map(fromFile));
 }
 
-try {
-  if (module) {
-    module.exports = fromFiles;
-  }
-} catch (error) {}
-
-function fromFiles(files: File[]) {
-  return Promise.all(
-    Array.from(files).map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const arrayBuffer = e.target?.result;
-          if (!arrayBuffer || typeof arrayBuffer === "string") {
-            throw new Error("Could not read file");
-          }
-          const mimeType = getMimeTypes(arrayBuffer, file.type);
-          resolve(mimeType);
-        };
-        reader.readAsArrayBuffer(file);
-      });
-    })
-  );
+export function fromFile(file: File) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const arrayBuffer = e.target?.result;
+      if (!arrayBuffer || typeof arrayBuffer === "string") {
+        throw new Error("Could not read file");
+      }
+      const mimeType = getMimeTypes(arrayBuffer, file.type);
+      resolve(mimeType);
+    };
+    reader.readAsArrayBuffer(file);
+  });
 }
 
 function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
@@ -49,7 +42,7 @@ function getMimeTypes(arrayBuffer: ArrayBuffer, fallback = "unknown") {
 function getHexFromRange(
   arrayBuffer: ArrayBuffer,
   start: number,
-  length: number
+  length: number,
 ) {
   const uint8Array = new Uint8Array(arrayBuffer);
   const hexValues = [] as string[];
